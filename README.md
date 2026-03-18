@@ -2,7 +2,7 @@
 
 **QA Engineer | Mobile & API Testing | Playwright | Scrum Master**
 
-Hi! I'm [Your Name], a Quality Assurance Engineer with 4+ years of experience in manual testing, iOS mobile testing, and test planning. I previously served as iOS QA Lead at Infosys. I hold a Master's degree from California State University, San Bernardino, a Certified Scrum Master credential, and CompTIA Security+ certification.
+Hi! I'm Tanu Gupta , a Quality Assurance Engineer with 4+ years of experience in manual testing, iOS mobile testing, and test planning. I previously served as iOS QA Lead at Infosys. I hold a Master's degree from California State University, San Bernardino, a Certified Scrum Master credential, and CompTIA Security+ certification.
 
 This portfolio showcases my automation testing skills using **Playwright (Python)** and **Postman API Testing**.
 
