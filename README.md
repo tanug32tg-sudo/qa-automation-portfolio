@@ -111,8 +111,8 @@ A comprehensive API test collection covering CRUD operations against [JSONPlaceh
 
 ## 📫 Contact
 
-- **LinkedIn:** [your-linkedin-url]
-- **Email:** [your-email]
+- **LinkedIn:** https://www.linkedin.com/in/tanugupta-qa/
+- **Email:** tanug32tg@gmail.com
 - **Location:** San Bernardino, CA
 
 ---
