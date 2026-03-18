@@ -1,0 +1,368 @@
+{
+  "info": {
+    "name": "QA Portfolio - API Testing Collection",
+    "description": "A collection of API tests demonstrating GET, POST, PUT, and DELETE operations with test assertions. Uses JSONPlaceholder (https://jsonplaceholder.typicode.com/) - a free fake REST API for testing.\n\nAuthor: [Your Name]\nDate: March 2026",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. GET - Fetch All Users",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/users",
+          "protocol": "https",
+          "host": ["jsonplaceholder", "typicode", "com"],
+          "path": ["users"]
+        },
+        "description": "Fetches a list of all users from the API. Validates response status, data structure, and expected number of users."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Test 1: Status code should be 200",
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Test 2: Response should be an array",
+              "pm.test('Response is an array', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data).to.be.an('array');",
+              "});",
+              "",
+              "// Test 3: Should return 10 users",
+              "pm.test('Returns 10 users', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.length).to.eql(10);",
+              "});",
+              "",
+              "// Test 4: Each user should have required fields",
+              "pm.test('Each user has required fields', function () {",
+              "    const data = pm.response.json();",
+              "    data.forEach(function(user) {",
+              "        pm.expect(user).to.have.property('id');",
+              "        pm.expect(user).to.have.property('name');",
+              "        pm.expect(user).to.have.property('email');",
+              "        pm.expect(user).to.have.property('username');",
+              "    });",
+              "});",
+              "",
+              "// Test 5: Response time should be under 2 seconds",
+              "pm.test('Response time is acceptable', function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. GET - Fetch Single User by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/users/1",
+          "protocol": "https",
+          "host": ["jsonplaceholder", "typicode", "com"],
+          "path": ["users", "1"]
+        },
+        "description": "Fetches a single user by their ID. Validates the correct user is returned with complete data."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Returns correct user (ID = 1)', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.id).to.eql(1);",
+              "    pm.expect(data.name).to.eql('Leanne Graham');",
+              "});",
+              "",
+              "pm.test('User has address with geo coordinates', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.address).to.have.property('geo');",
+              "    pm.expect(data.address.geo).to.have.property('lat');",
+              "    pm.expect(data.address.geo).to.have.property('lng');",
+              "});",
+              "",
+              "pm.test('Content-Type is JSON', function () {",
+              "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. GET - Fetch User's Posts (Nested Resource)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/users/1/posts",
+          "protocol": "https",
+          "host": ["jsonplaceholder", "typicode", "com"],
+          "path": ["users", "1", "posts"]
+        },
+        "description": "Fetches all posts belonging to user ID 1. Demonstrates testing nested/related resources."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Returns posts as an array', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data).to.be.an('array');",
+              "    pm.expect(data.length).to.be.above(0);",
+              "});",
+              "",
+              "pm.test('All posts belong to user ID 1', function () {",
+              "    const data = pm.response.json();",
+              "    data.forEach(function(post) {",
+              "        pm.expect(post.userId).to.eql(1);",
+              "    });",
+              "});",
+              "",
+              "pm.test('Each post has title and body', function () {",
+              "    const data = pm.response.json();",
+              "    data.forEach(function(post) {",
+              "        pm.expect(post).to.have.property('title');",
+              "        pm.expect(post).to.have.property('body');",
+              "        pm.expect(post.title).to.not.be.empty;",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. POST - Create New Post",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"QA Testing Best Practices\",\n    \"body\": \"This post covers the importance of test planning, defect lifecycle management, and regression testing in agile environments.\",\n    \"userId\": 1\n}"
+        },
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/posts",
+          "protocol": "https",
+          "host": ["jsonplaceholder", "typicode", "com"],
+          "path": ["posts"]
+        },
+        "description": "Creates a new post using POST method. Validates that the server returns 201 Created and the response contains the submitted data."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Response contains the submitted title', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.title).to.eql('QA Testing Best Practices');",
+              "});",
+              "",
+              "pm.test('Response contains the submitted body', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.body).to.include('test planning');",
+              "});",
+              "",
+              "pm.test('Response has an ID (new resource created)', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data).to.have.property('id');",
+              "    pm.expect(data.id).to.be.a('number');",
+              "});",
+              "",
+              "pm.test('UserID matches what we sent', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.userId).to.eql(1);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. PUT - Update Existing Post",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"id\": 1,\n    \"title\": \"Updated: QA Automation with Playwright\",\n    \"body\": \"Updated content covering Playwright Python automation testing framework and its integration with pytest.\",\n    \"userId\": 1\n}"
+        },
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/posts/1",
+          "protocol": "https",
+          "host": ["jsonplaceholder", "typicode", "com"],
+          "path": ["posts", "1"]
+        },
+        "description": "Updates an existing post using PUT method. Validates the update was successful and response reflects the changes."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Title was updated', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.title).to.eql('Updated: QA Automation with Playwright');",
+              "});",
+              "",
+              "pm.test('Body was updated', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.body).to.include('Playwright Python');",
+              "});",
+              "",
+              "pm.test('ID remains unchanged', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.id).to.eql(1);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. DELETE - Remove a Post",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/posts/1",
+          "protocol": "https",
+          "host": ["jsonplaceholder", "typicode", "com"],
+          "path": ["posts", "1"]
+        },
+        "description": "Deletes a post using DELETE method. Validates the server returns 200 OK confirming deletion."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 (successful deletion)', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response body is empty object', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(Object.keys(data).length).to.eql(0);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. GET - 404 Not Found (Negative Test)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/users/9999",
+          "protocol": "https",
+          "host": ["jsonplaceholder", "typicode", "com"],
+          "path": ["users", "9999"]
+        },
+        "description": "Negative test: Requests a user that doesn't exist. Validates the API returns 404 Not Found."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 404 for non-existent user', function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test('Response body is empty', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(Object.keys(data).length).to.eql(0);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. GET - Filter Posts by Query Parameter",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/posts?userId=2",
+          "protocol": "https",
+          "host": ["jsonplaceholder", "typicode", "com"],
+          "path": ["posts"],
+          "query": [
+            {
+              "key": "userId",
+              "value": "2"
+            }
+          ]
+        },
+        "description": "Uses query parameters to filter posts by userId. Demonstrates testing API filtering capabilities."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('All returned posts belong to userId 2', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.length).to.be.above(0);",
+              "    data.forEach(function(post) {",
+              "        pm.expect(post.userId).to.eql(2);",
+              "    });",
+              "});",
+              "",
+              "pm.test('Returns exactly 10 posts for user 2', function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.length).to.eql(10);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
